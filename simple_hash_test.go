@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestRetrieval(t *testing.T) {
+func TestStringRetrieval(t *testing.T) {
 	cases := []struct {
 		Contents []string
 	}{
@@ -24,6 +24,31 @@ func TestRetrieval(t *testing.T) {
 				c := d.Get(k)
 				if c != content {
 					t.Fatalf("content does not match\n%s\n%s\n", c, content)
+				}
+			}
+		})
+	}
+}
+
+func TestIntRetrieval(t *testing.T) {
+	cases := []struct {
+		Contents []int
+	}{
+		{[]int{0}},
+		{[]int{1, 2, 3}},
+	}
+
+	for i, tc := range cases {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			d := Data{}
+			for _, content := range tc.Contents {
+				k, err := d.Put(content)
+				if err != nil {
+					t.Fatalf("failed putting content %d\n", content)
+				}
+				c := d.Get(k)
+				if c != content {
+					t.Fatalf("content does not match\n%d\n%d\n", c, content)
 				}
 			}
 		})
