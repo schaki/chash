@@ -55,7 +55,7 @@ func TestIntRetrieval(t *testing.T) {
 	}
 }
 
-func TestArrayRetrieval(t *testing.T) {
+func TestSliceRetrieval(t *testing.T) {
 	cases := []struct {
 		Contents [][]int
 	}{
@@ -73,6 +73,41 @@ func TestArrayRetrieval(t *testing.T) {
 				c := d.Get(k)
 				if len(c.([]int)) != len(content) {
 					t.Fatalf("content does not match\n%d\n%d\n", c, content)
+				}
+			}
+		})
+	}
+}
+
+type TestStruct struct {
+	S     string
+	I     int
+	Items []string
+}
+
+func TestStructRetrieval(t *testing.T) {
+	ts := &TestStruct{
+		S:     "test",
+		I:     100,
+		Items: []string{"cheese", "burgers", "and", "fries"},
+	}
+	cases := []struct {
+		Contents []TestStruct
+	}{
+		{[]TestStruct{*ts}},
+	}
+
+	for i, tc := range cases {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			d := Data{}
+			for _, content := range tc.Contents {
+				k, err := d.Put(content)
+				if err != nil {
+					t.Fatalf("failed putting content %v %s\n", content, err)
+				}
+				c := d.Get(k)
+				if c.(TestStruct).S != ts.S {
+					t.Fatalf("content does not match\n%v\n%v\n", c, content)
 				}
 			}
 		})
