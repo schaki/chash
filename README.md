@@ -1,4 +1,4 @@
 # A sensible hashmap
 
-* Support hashing strings, integers
+* Support for hashing and storing strings, integers, arrays, slices, and structs
 * Prioritize speed over memory

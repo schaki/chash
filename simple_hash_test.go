@@ -55,6 +55,30 @@ func TestIntRetrieval(t *testing.T) {
 	}
 }
 
+func TestArrayRetrieval(t *testing.T) {
+	cases := []struct {
+		Contents [][]int
+	}{
+		{[][]int{{10, 100}}},
+	}
+
+	for i, tc := range cases {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			d := Data{}
+			for _, content := range tc.Contents {
+				k, err := d.Put(content)
+				if err != nil {
+					t.Fatalf("failed putting content %d %s\n", content, err)
+				}
+				c := d.Get(k)
+				if len(c.([]int)) != len(content) {
+					t.Fatalf("content does not match\n%d\n%d\n", c, content)
+				}
+			}
+		})
+	}
+}
+
 func ensureData(s *int) (Data, []uint64) {
 	d := Data{}
 	i := 100
