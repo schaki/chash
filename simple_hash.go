@@ -19,29 +19,24 @@ func write(h hash.Hash64, s string) {
 	}
 }
 
+// hasher will provide a hash value for supported types
 //nolint: gocyclo
 func hasher(i interface{}) (uint64, error) {
 	h := fnv.New64()
-	supported := false
 
 	v := reflect.ValueOf(i)
 	k := v.Kind()
 	switch k {
 	case reflect.Int:
-		supported = true
 		v = reflect.ValueOf(v.Int())
 		write(h, fmt.Sprintf("%d", v))
 	case reflect.Uint:
-		supported = true
 		v = reflect.ValueOf(v.Uint())
 		write(h, fmt.Sprintf("%d", v))
 	case reflect.String:
-		supported = true
 		write(h, v.String())
-	case reflect.Array:
-	case reflect.Slice:
+	case reflect.Array, reflect.Slice:
 		var arrHash uint64
-		supported = true
 		l := v.Len()
 		for i := 0; i < l; i++ {
 			t, err := hasher(v.Index(i).Interface())
@@ -76,13 +71,11 @@ func hasher(i interface{}) (uint64, error) {
 			}
 		}
 		write(h, fmt.Sprintf("%d", sHash))
+	default:
+		return 0, fmt.Errorf("unsupported kind for hasher %s", k)
 	}
 
-	if supported {
-		return h.Sum64(), nil
-	}
-
-	return 0, fmt.Errorf("unsupported kind for hasher %s", k)
+	return h.Sum64(), nil
 }
 
 // Put stores a value in a Data and gives the client a key
