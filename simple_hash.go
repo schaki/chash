@@ -64,8 +64,6 @@ func hasher(i interface{}) (uint64, error) {
 			if t.Field(i).Name == "_" {
 				continue
 			}
-			thing := t.Field(i)
-			fmt.Printf("%+v\n", thing)
 			fieldValue := v.Field(i)
 			item, err := hasher(fieldValue.Interface())
 			if err != nil {
