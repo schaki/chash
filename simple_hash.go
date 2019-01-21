@@ -84,6 +84,9 @@ func (d Data) Put(v interface{}) (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
+	if d[h] != nil {
+		return 0, fmt.Errorf("collision detected hash %d", h)
+	}
 	d[h] = v
 	return h, nil
 }
