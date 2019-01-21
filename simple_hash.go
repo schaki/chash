@@ -1,3 +1,6 @@
+// Package simplehash provides a client with a simple hash structure
+// While slices, array, and structs, are supported in the Data structure,
+// order is not considered in the hashing function
 package simplehash
 
 import (
@@ -79,6 +82,8 @@ func hasher(i interface{}) (uint64, error) {
 }
 
 // Put stores a value in a Data and gives the client a key
+// Supported types are strings, integers, arrays, slices, and structs
+// Collisions will be presented as errors for the client to handle
 func (d Data) Put(v interface{}) (uint64, error) {
 	h, err := hasher(v)
 	if err != nil {
